@@ -9,7 +9,7 @@ app.use(cors())
 // Endpoints
 router.get('/', (req, res) => {
     res.json({
-        title: "API para fornecer os serviços necessários para meu portifólio."
+        title: "API para download de arquivo .PDF"
     })
 })
 
