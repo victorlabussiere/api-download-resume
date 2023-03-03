@@ -7,9 +7,7 @@
     "node": "18.x"
   },
   "scripts": {
-    "dev": "nodemon ./api/index.js",
-    "start": "node ./api/index.js",
-    "vercel-build": "node ./api/index.js"
+    "start": "node ./api/index.js"
   },
   "author": "Victor Labussiere",
   "license": "ISC",
