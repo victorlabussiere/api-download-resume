@@ -7,7 +7,9 @@
     "node": "18.x"
   },
   "scripts": {
-    "start": "node ./api/index.js"
+    "test": "mocha ./tests/MailController.test.js -w",
+    "start": "node ./api/index.js",
+    "dev": "nodemon ./api/index.js localhost 4000"
   },
   "author": "Victor Labussiere",
   "license": "ISC",
@@ -16,9 +18,11 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.1"
   },
   "devDependencies": {
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.20"
   }
 }
