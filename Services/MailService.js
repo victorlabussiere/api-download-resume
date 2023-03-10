@@ -45,7 +45,7 @@ module.exports = class MailController {
             to: this.myMail,
             replyTo: this.client.email,
             subject: `Mensagem recebida de ${this.client.name} através da plataforma Victor Labussiere JS DEV.`,
-            text: `Mensagem do cliente ${this.client.name}: ${this.client.message}`,
+            text: `Nome do usuário: ${this.client.name}.\n Mensagem: ${this.client.message}`,
             envelope: {
                 from: this.server.email,
                 to: this.myMail
@@ -55,26 +55,45 @@ module.exports = class MailController {
         return config
     }
 
-    async send() {
+    async sendClient() {
         try {
             const config = this.getClientConfig()
-            const adminConfig = this.getAdmConfig()
-
-            const sendClient = await this.transporter.sendMail(config, (err, info) => {
+            return await this.transporter.sendMail(config, (err, info) => {
                 if (err) return new Error({ message: err.message, error: err })
                 return info
-            })
+            }).then(res => {
+                return {
+                    message: 'sucess',
+                    data: res.info
+                }
+            }).catch(err => new Error(err))
 
-            const sendAdm = await this.transporter.sendMail(adminConfig, (err, info) => {
-                if (err) return new Error({ message: err.message, error: err })
-                return info
-            })
-
-            return await (sendClient, sendAdm)
         } catch (err) {
             return {
                 erro: err,
                 message: err.message
+            }
+        }
+    }
+
+    async sendAdmin() {
+        try {
+            const adminConfig = this.getAdmConfig()
+            return await this.transporter.sendMail(adminConfig, async (err, info) => {
+                if (err) return new Error({ message: err.message, error: err })
+                return info
+            }).then(res => {
+                return {
+                    message: 'sucess',
+                    data: res.info
+                }
+            }).catch(err => new Error(err))
+
+
+        } catch (err) {
+            return {
+                message: err.message,
+                error: err
             }
         }
     }

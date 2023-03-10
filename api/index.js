@@ -1,5 +1,7 @@
 // Import packages
 const [cors, express, path] = ['cors', 'express', 'path'].map(i => require(i))
+const MailController = require("../Services/MailService")
+
 const app = express()
 const router = express.Router()
 
@@ -15,25 +17,45 @@ router.get('/', (req, res) => {
 })
 
 router.get('/download', async (req, res) => {
+
     const file = await path.join(__dirname, '../static', 'curriculo-victor.pdf')
-    res.download(file)
+
+    try {
+        if (!res) throw new Error()
+
+        return res.download(file)
+            .catch(err => new Error({ message: err.message, error: err }))
+
+    } catch (err) {
+        return {
+            message: 'Não foi possível realizar o download',
+            error: err
+        }
+    }
 })
 
 router.post('/mail', async (req, res) => {
+    const client = { ...req.body }
+    const mail = new MailController(client)
 
     try {
-        const MailController = require("../Services/MailService")
-        const client = { ...req.body }
-        const mail = new MailController(client)
 
-        await mail.send()
+        if (!res) throw new Error()
+        const send = async () => {
+            await mail.sendClient()
+            await mail.sendAdmin()
+            return void (0)
+        }
 
-        return res.json({
-            message: 'Mensagem enviada',
-            status: 200
-        })
+        await send()
+        return res.json({ message: 'Enviado' })
 
-    } catch (err) { return { message: err.mesasge, error: err } }
+    } catch (err) {
+        return {
+            message: err.mesasge,
+            error: err
+        }
+    }
 
 })
 
