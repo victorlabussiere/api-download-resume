@@ -9,7 +9,8 @@
   "scripts": {
     "test": "mocha ./tests/MailController.test.js -w",
     "start": "node ./api/index.js",
-    "dev": "nodemon ./api/index.js localhost 4000"
+    "dev": "nodemon ./api/index.js localhost 4000",
+    "curl": "curl http://localhost:3001/mail"
   },
   "author": "Victor Labussiere",
   "license": "ISC",

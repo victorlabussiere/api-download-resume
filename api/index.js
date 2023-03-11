@@ -1,67 +1,68 @@
 // Import packages
 const [cors, express, path] = ['cors', 'express', 'path'].map(i => require(i))
-const MailController = require("../Services/MailService")
-
 const app = express()
 const router = express.Router()
 
-// Middlewares
-app.use(cors())
-app.use(express.json())
+function main() {
 
-// Endpoints
-router.get('/', (req, res) => {
-    res.json({
-        title: "API para download de arquivo .PDF"
+    app.use(cors())
+    app.use(express.json())
+    app.use(router)
+
+    // Endpoints
+    router.get('/', (req, res) => {
+        res.json({
+            title: "API para download de arquivo .PDF"
+        })
+
+        return res.end()
     })
-})
 
-router.get('/download', async (req, res) => {
+    router.get('/download', async (req, res) => {
 
-    const file = await path.join(__dirname, '../static', 'curriculo-victor.pdf')
+        const file = await path.join(__dirname, '../static', 'curriculo-victor.pdf')
 
-    try {
-        if (!res) throw new Error()
+        try {
 
-        return res.download(file)
-            .catch(err => new Error({ message: err.message, error: err }))
+            if (!res) throw new Error()
+            res.download(file)
+                .catch(err => new Error({ message: err.message, error: err }))
 
-    } catch (err) {
-        return {
-            message: 'Não foi possível realizar o download',
-            error: err
+            return res.end()
+
+        } catch (err) {
+            return {
+                message: 'Não foi possível realizar o download',
+                error: err
+            }
         }
-    }
-})
+    })
 
-router.post('/mail', async (req, res) => {
-    const client = { ...req.body }
-    const mail = new MailController(client)
+    router.post('/mail', async (req, res) => {
+        const client = { ...req.body }
+        const SendControl = require('../Controller/SendControl')
 
-    try {
+        try {
+            const sendControl = new SendControl(client)
+            const response = sendControl.sendMail()
 
-        if (!res) throw new Error()
-        const send = async () => {
-            await mail.sendClient()
-            await mail.sendAdmin()
-            return void (0)
+            if (response.status !== 200) throw new Error('Erro na operação.')
+            else return res.end('Operaçoes realizadas com sucesso.')
+        }
+        catch (err) {
+            return {
+                message: err.mesasge,
+                error: err
+            }
         }
 
-        await send()
-        return res.json({ message: 'Enviado' })
+    })
 
-    } catch (err) {
-        return {
-            message: err.mesasge,
-            error: err
-        }
-    }
+    const port = process.env.PORT || 3001
+    app.listen(port, () => {
+        console.log(`Server running at port http://localhost:${port}`)
+        return void (0)
+    })
+}
 
-})
-
-// Server
-app.use(router)
-const port = process.env.PORT || 3001
-app.listen(port, () => {
-    return console.log(`Server running at port http://localhost:${port}`)
-})
+main()

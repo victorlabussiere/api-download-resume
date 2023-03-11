@@ -1,15 +1,10 @@
 const nodemailer = require('nodemailer')
 require('dotenv').config()
 
-module.exports = class MailController {
+module.exports = class MailServices {
 
-    constructor(client) {
-        this.server = {
-            email: process.env.SERVER_MAIL,
-            pass: process.env.PASS,
-            port: process.env.SMTP_PORT,
-            host: process.env.SMTP_HOST
-        }
+    constructor(client, server) {
+        this.server = { ...server }
 
         this.transporter = nodemailer.createTransport({
             host: this.server.host,
@@ -20,11 +15,11 @@ module.exports = class MailController {
             }
         })
 
-        this.myMail = process.env.MAIL
+        this.myMail = this.server.adm
         this.client = { ...client }
     }
 
-    getClientConfig() {
+    _getClientConfig() {
         const config = {
             from: this.server.email,
             to: this.client.email,
@@ -39,7 +34,7 @@ module.exports = class MailController {
         return config
     }
 
-    getAdmConfig() {
+    _getAdmConfig() {
         const config = {
             from: this.server.email,
             to: this.myMail,
@@ -57,7 +52,7 @@ module.exports = class MailController {
 
     async sendClient() {
         try {
-            const config = this.getClientConfig()
+            const config = this._getClientConfig()
             return await this.transporter.sendMail(config, (err, info) => {
                 if (err) return new Error({ message: err.message, error: err })
                 return info
@@ -78,7 +73,7 @@ module.exports = class MailController {
 
     async sendAdmin() {
         try {
-            const adminConfig = this.getAdmConfig()
+            const adminConfig = this._getAdmConfig()
             return await this.transporter.sendMail(adminConfig, async (err, info) => {
                 if (err) return new Error({ message: err.message, error: err })
                 return info
