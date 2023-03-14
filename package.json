@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Api para gerar um download do meu curriculo.",
   "main": "index.js",
-  "type": "commonjs",
   "engines": {
     "node": "18.x"
   },
