@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Api para gerar um download do meu curriculo.",
   "main": "index.js",
+  "type": "commonjs",
   "engines": {
     "node": "18.x"
   },
   "scripts": {
-    "start": "node ./api/index.js",
-    "dev": "nodemon ./api/index.js localhost 4000"
+    "start": "node ./api/index.js"
   },
   "author": "Victor Labussiere",
   "license": "ISC",
