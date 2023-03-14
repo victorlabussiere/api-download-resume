@@ -28,7 +28,7 @@ function main() {
             res.download(file)
                 .catch(err => new Error({ message: err.message, error: err }))
 
-            return res.end()
+            return res.status(200)
 
         } catch (err) {
             return {
